@@ -1,0 +1,76 @@
+{% extends 'base.html' %}
+{% block title %}Home Page{% endblock %}
+{% block body %}
+{% load static %}
+
+<div class="container my-4 alert alert-success"> 
+    <div class="card">
+        <!-- <h5 class="card-header">By <a style="text-decoration:none; color:#DC3545;" href=""></a></h5> -->
+        <div class="card-body">
+            <h5 class="card-title">{{file.title}}</h5>
+            <p class="card-text">{{file.description}}</p>
+                <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
+                <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
+        </div>
+    </div>
+
+
+
+
+
+    <div class="col-md-12 col-sm-12">
+        <div class="panel panel-default arrow left">
+            <div class="panel-body">
+                <header class="text-left">
+                    <div class="comment-user"><i class="fa fa-user"></i>Test Test</div>
+                    <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i>11.11.2000</time>
+                </header>
+                <hr>
+                <div class="comment-post">
+                    <p>
+                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga minima quo, hic magni illo ipsa vero ipsum! Voluptas voluptatum ab voluptatibus fugiat facilis impedit molestiae, minus quo, quae quasi nesciunt.
+                    </p>
+                </div>
+                
+            </div>
+        </div>
+    </div>
+    <hr>
+
+
+    <div class ="add_comment">
+        <div class="form-group col-12">
+            <label for="exampleFormControlTextarea1">Comment yaz
+            </label>
+            <textarea class="form-control col-6" id="comment_area" rows="3"></textarea>
+        </div>
+        <div>
+            <button class="btn btn-primary send_btn">Gonder</button>
+        </div>
+    </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+</div>
+
+
+ 
+
+
+{% endblock %}

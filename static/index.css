@@ -1,0 +1,36 @@
+.card {
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+    max-width: 920px;
+    margin: auto;
+    margin-top: 50px;
+    
+    text-align: center;
+    font-family: arial;
+  }
+  
+  .price {
+    color: rgb(66, 64, 64);
+    font-size: 22px;
+  }
+  
+  .dwldBtn{
+    background-color: rgb(44, 119, 168) !important;
+  } 
+
+  .card button {
+    border: none;
+    outline: 0;
+    padding: 12px;
+    color: white;
+    background-color: #4CAF50;
+    text-align: center;
+    cursor: pointer;
+    width: 100%;
+    font-size: 18px;
+  }
+
+  
+
+  .card button:hover {
+    opacity: 0.7;
+  }

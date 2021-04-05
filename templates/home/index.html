@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Home Page{% endblock %}
+{% block body %}
+{% load static %}
+<!--Posts -->
+
+{% if request.user.is_authenticated %}
+    
+    {% if files %}
+    
+        {% for file in files %}
+        <div class="container my-4 alert alert-success"> 
+            <div class="card">
+                <!-- <h5 class="card-header">By <a style="text-decoration:none; color:#DC3545;" href=""></a></h5> -->
+                <div class="card-body">
+                    <h5 class="card-title">{{file.title}}</h5>
+                    <p class="card-text">{{file.description}}</p>
+
+                
+                        <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
+                        <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    
+    {% else %}
+    <h1 style="color:red">You have no files yet </h1>
+    {% endif %}
+{% else %}
+
+<h1 style="color: blue;">You have not logged in</h1>
+    
+{% endif %}`
+
+
+{% endblock %}
