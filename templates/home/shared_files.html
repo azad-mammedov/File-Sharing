@@ -12,7 +12,7 @@
         {% for file in files %}
         <div class="container my-4 alert alert-success"> 
             <div class="card">
-                <!-- <h5 class="card-header">By <a style="text-decoration:none; color:#DC3545;" href=""></a></h5> -->
+                <h5 class="card-header">By {{file.user}}<a style="text-decoration:none; color:#DC3545;" href=""></a></h5>
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'file-single' file.id %}">{{file.title}}</a></h5>
                     <p class="card-text">{{file.description}}</p>
@@ -26,7 +26,7 @@
         {% endfor %}
     
     {% else %}
-    <h1 style="color:red">You have no files yet </h1>
+    <h1 style="color:red">No one shared file with you </h1>
     {% endif %}
 {% else %}
 

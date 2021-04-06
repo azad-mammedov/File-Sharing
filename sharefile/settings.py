@@ -37,8 +37,15 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'channels',
+
     'home',
     'account',
+
+
+
+    'django_cleanup'
 ]
 
 MIDDLEWARE = [
@@ -52,6 +59,8 @@ MIDDLEWARE = [
 ]
 
 ROOT_URLCONF = 'sharefile.urls'
+
+
 
 TEMPLATES = [
     {
@@ -70,6 +79,8 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = 'sharefile.wsgi.application'
+
+ASGI_APPLICATION = "sharefile.asgi.application"
 
 
 # Database
@@ -129,3 +140,14 @@ STATICFILES_DIRS = [os.path.join(BASE_DIR,'static')]
 STATIC_ROOT = os.path.join(BASE_DIR,'staticfiles')
 
 MEDIA_ROOT = os.path.join(BASE_DIR,'media')
+
+
+
+CHANNEL_LAYERS = {
+
+    "default": {
+        "BACKEND": "channels.layers.InMemoryChannelLayer"
+    }
+}
+
+

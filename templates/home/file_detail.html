@@ -3,11 +3,11 @@
 {% block body %}
 {% load static %}
 
-<div class="container my-4 alert alert-success"> 
+<div class="container my-4 alert alert-success" > 
     <div class="card">
-        <!-- <h5 class="card-header">By <a style="text-decoration:none; color:#DC3545;" href=""></a></h5> -->
+        <h5 class="card-header">By {{file.user.username}}<a style="text-decoration:none; color:#DC3545;" href=""></a></h5>
         <div class="card-body">
-            <h5 class="card-title">{{file.title}}</h5>
+            <h5 class="card-title" file_id="{{file.id}}">{{file.title}}</h5>
             <p class="card-text">{{file.description}}</p>
                 <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
                 <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
@@ -17,18 +17,20 @@
 
 
 
-
+    
+{% for comment in comments %}
+     
     <div class="col-md-12 col-sm-12">
         <div class="panel panel-default arrow left">
             <div class="panel-body">
                 <header class="text-left">
-                    <div class="comment-user"><i class="fa fa-user"></i>Test Test</div>
-                    <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i>11.11.2000</time>
+                    <div class="comment-user"><i class="fa fa-user"></i>{{comment.user.username}}</div>
+                    <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i>{{comment.date}}</time>
                 </header>
                 <hr>
                 <div class="comment-post">
                     <p>
-                        Lorem ipsum dolor sit amet consectetur adipisicing elit. Fuga minima quo, hic magni illo ipsa vero ipsum! Voluptas voluptatum ab voluptatibus fugiat facilis impedit molestiae, minus quo, quae quasi nesciunt.
+                        {{comment.text}}
                     </p>
                 </div>
                 
@@ -36,8 +38,10 @@
         </div>
     </div>
     <hr>
+{% endfor %}
 
-
+{% if can_comment %}
+        
     <div class ="add_comment">
         <div class="form-group col-12">
             <label for="exampleFormControlTextarea1">Comment yaz
@@ -48,6 +52,7 @@
             <button class="btn btn-primary send_btn">Gonder</button>
         </div>
     </div>
+{% endif %}
 
 
 
@@ -60,17 +65,21 @@
 
 
 
+</div> 
+<script>
+
+    var id = $('.card-title').attr('file_id')
+
+    const socket = new WebSocket(
+        "ws://"+
+        window.location.host+
+        "/ws/file/"+
+        id
+        )
 
 
 
-
-
-
-
-</div>
-
-
- 
+</script>
 
 
 {% endblock %}
