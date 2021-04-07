@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload File{% endblock %}
+
+{% block body %}
+
+<div class="container my-4 alert alert-success"> 
+    <div class="container">
+            {% csrf_token %}
+            <br>
+            
+            {% for permission in permissions %}
+            <div class="form-group">
+                <input style="width: 100px;" placeholder="{{permission.user.username}}" disabled>
+                <input style="width: auto;" placeholder="{{permission.file.title}}" disabled>
+                <input type="checkbox" id="comment_perm" value="false" class="input_checkbox" {% if permission.comment %} checked {% endif %}>
+                <label for="comment_perm">Comment</label>
+                <button type="submit" class="change_perm" perm_id="{{permission.id}}">Change</button>
+                <button type="submit" class="delete_perm" perm_id="{{permission.id}}">Sil</button>
+            </div> 
+            {% endfor %}
+         
+    </div>
+</div>
+
+<script>
+
+
+    function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+
+
+
+
+
+$('.input_checkbox').on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true')
+        }
+        else {
+            $(this).attr('value', 'false')
+        }
+    })
+
+
+$('.change_perm').on('click',function(){
+    perm_id = $(this).attr('perm_id')
+    comment = $(this).parent('div').children('.input_checkbox').val()
+    $.ajax({
+        method:"PUT",
+        headers:{
+            'X-CSRFToken':getCookie('csrftoken')
+        },
+        url:"/api/permission/update/"+perm_id,
+        data:{'comment':comment},
+        success:function(data){
+            alert(data['message'])
+        },
+        error:function(data){
+            alert('Xeta bas verdi')
+        }
+        
+
+        })
+    })
+
+$('.delete_perm').on('click',function(){
+    this_= $(this)
+    perm_id = $(this).attr('perm_id')
+    $.ajax({
+        method:'DELETE',
+        headers:{
+            "X-CSRFToken":getCookie('csrftoken')
+        },
+        url:"/api/permission/delete/"+perm_id,
+        success:function(data){
+            alert(data['message'])
+            this_.parent('div').remove()
+        },
+        error:function(data){
+            alert(data['message'])
+            
+        }
+
+        
+    })
+
+})
+
+
+
+
+</script>
+
+{% endblock %}

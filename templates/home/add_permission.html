@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+
+{% block title %}Upload File{% endblock %}
+
+{% block body %}
+
+<div class="container my-4 alert alert-success"> 
+    <div class="container">
+            {% csrf_token %}
+            <br>
+            <div class="form-group">
+                <select name="user" id="user" style="width:200px;" class="selBox" >
+                    <option selected disabled>User...</option>
+                    
+                    {% for user in users  %}
+                        <option value="{{user.id}}">{{user.username}}</option>
+                    {% endfor %}
+                        
+                </select>
+            </div>
+
+            <div class="form-group">
+                <select name="file" id="file" style="width:200px;" class="selBox">
+                <option selected disabled>Fayl....</option>
+                
+                {% for file in files %}
+                <option value="{{file.id}}">{{file.title}}</option>
+                    
+                {% endfor %}
+                    
+                </select>
+            </div>
+            <div class="form-group">
+                <input type="checkbox" id="comment_perm" value="false" class="input_checkbox">
+                <label for="comment_perm">Comment</label>
+            </div>
+
+
+            
+            {% if message %}
+            <div class = "form-group">
+                <label for="exampleFormControlInput1" style="color: red;" class="display-3">{{message}}</label>
+            </div>
+                
+            {% endif %}
+                
+            <input type="submit" value="Upload" class="btn btn-outline-primary add_perm">
+    </div>
+</div>
+
+<script>
+
+    // Get csrf token for api session authentication
+function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+
+
+
+
+
+$('.input_checkbox').on('change', function () {
+        if ($(this).is(':checked')) {
+            $(this).attr('value', 'true')
+        }
+        else {
+            $(this).attr('value', 'false')
+        }
+    })
+
+
+$('.add_perm').on('click',function(){
+    file_id = $('#file option:selected').val()
+    user_id = $('#user option:selected').val()
+    comment = $('#comment_perm').val()
+    if((file_id == "") || (user_id == "")){
+        return alert('ALL FIELDS MUST BE SET')
+    }
+
+
+    $.ajax({
+        headers:{
+            "X-CSRFToken":getCookie('csrftoken')
+        },
+        url:'/api/permission/add',
+        method:"POST",
+        data:{
+            'file':file_id,
+            'user':user_id,
+            'comment':comment
+        },
+        success:function(data){
+            alert(data['message'])
+        },
+        error:function(data){
+            console.log(data)
+        }
+        
+    
+    })
+
+
+
+
+})
+
+</script>
+{% endblock%}

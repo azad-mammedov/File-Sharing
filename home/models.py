@@ -25,15 +25,21 @@ class File(models.Model):
 
 class Permission(models.Model):
     user = models.ForeignKey(CustomUser,on_delete=models.CASCADE)
-    file =models.ForeignKey(File,on_delete=models.CASCADE)
+    file =models.ForeignKey(File,on_delete=models.CASCADE,related_name='permissions')
     comment = models.BooleanField(default=False)
+    given_from = models.ForeignKey(CustomUser,on_delete=models.CASCADE,blank=True,null=True,editable=False,related_name="given_permissions")
+
+
 
     def __str__(self):
         return "%s-%s"%(self.file.title,self.user.username)
     
     def save(self,*args, **kwargs):
         if self.user != self.file.user:
+            if self.file:
+                self.given_from = self.file.user
             super(Permission,self).save(*args, **kwargs)
+
 
 
 class Comment(models.Model):

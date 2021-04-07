@@ -4,13 +4,13 @@
 {% load static %}
 
 <div class="container my-4 alert alert-success" > 
-    <div class="card">
-        <h5 class="card-header">By {{file.user.username}}<a style="text-decoration:none; color:#DC3545;" href=""></a></h5>
+    <div class="card file" file_id= "{{file.id}}">
+        <h5 class="card-header" style="color:black;">By {{file.user.username}}<a style="text-decoration:none; color:#DC3545;" href=""></a></h5>
         <div class="card-body">
             <h5 class="card-title" file_id="{{file.id}}">{{file.title}}</h5>
             <p class="card-text">{{file.description}}</p>
-                <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
-                <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
+                <a href="/{{file.id}}/view/media/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
+                <a href="/{{file.id}}/download/media/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
         </div>
     </div>
 
@@ -20,11 +20,11 @@
     
 {% for comment in comments %}
      
-    <div class="col-md-12 col-sm-12">
+    <div class="col-md-12 col-sm-12 comment" style="border-style: solid;">
         <div class="panel panel-default arrow left">
             <div class="panel-body">
                 <header class="text-left">
-                    <div class="comment-user"><i class="fa fa-user"></i>{{comment.user.username}}</div>
+                    <div class="comment-user" ><i class="fa fa-user"></i>{{comment.user.username}}</div>
                     <time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i>{{comment.date}}</time>
                 </header>
                 <hr>
@@ -32,6 +32,10 @@
                     <p>
                         {{comment.text}}
                     </p>
+                    
+                    {% if request.user == file.user %}
+                    <button comment_id="{{comment.id}}"  class="delete_comment">commenti sil</button>
+                    {% endif %}
                 </div>
                 
             </div>
@@ -46,10 +50,10 @@
         <div class="form-group col-12">
             <label for="exampleFormControlTextarea1">Comment yaz
             </label>
-            <textarea class="form-control col-6" id="comment_area" rows="3"></textarea>
+            <textarea class="form-control col-6 comment_text" rows="3"></textarea>
         </div>
         <div>
-            <button class="btn btn-primary send_btn">Gonder</button>
+            <button class="btn btn-primary btn_send">Gonder</button>
         </div>
     </div>
 {% endif %}
@@ -67,15 +71,120 @@
 
 </div> 
 <script>
+// Get csrf token for api session authentication
+function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+
+
+
 
     var id = $('.card-title').attr('file_id')
-
+    var user  = "{{request.user.username}}"
+    console.log(user)
     const socket = new WebSocket(
         "ws://"+
         window.location.host+
         "/ws/file/"+
         id
         )
+
+
+
+$(".delete_comment").on('click',function(){
+        console.log('test')
+        this_ = $(this)
+        comment_id = this_.attr('comment_id')
+        file_id = $('.file').attr('file_id')
+        $.ajax({
+
+            method:'DELETE',
+            headers:{
+                'X-CSRFToken':getCookie('csrftoken')
+            },
+            url:"/api/comment/delete/"+file_id+"/"+comment_id,
+            success:function(data){
+                console.log(data)
+                this_.parents('div.comment').remove()
+                
+
+            },
+            error:function(data){
+                alert('Tapilmadi')
+                console.log(data)
+            }
+
+            
+        })
+
+
+
+
+    })
+
+
+$('.btn_send').on('click',function(){
+        text = $('.comment_text').val()
+        console.log(text)
+        if(text == ""){
+            alert('Comment bos ola bilmez')
+        }
+        else{
+        data = JSON.stringify({
+            'user':user,
+            'file':id,
+            'text':text
+        })
+        socket.send(data)
+        }
+
+
+    })
+
+
+    socket.onmessage = function(e){
+        data = JSON.parse(e.data)
+        console.log(data)
+        if(data['status'] == 'created'){
+            $('<div class="col-md-12 col-sm-12" style="border-style:solid">'+
+            '<div class="panel panel-default arrow left">'+
+            '<div class="panel-body">'+
+            '<header class="text-left">'+
+            ' <div class="comment-user"><i class="fa fa-user"></i>'+data['user']+'</div>'+
+            '<time class="comment-date" datetime="16-12-2014 01:05"><i class="fa fa-clock-o"></i> '+data['date']+'</time>'+
+            ' </header>'+
+            '<hr>'+
+            ' <div class="comment-post">'+
+            '<p>'+data['text']+'</p>'+
+
+            '{% if request.user == file.user  %}<button comment_id='+data['comment_id']+' class="delete_comment">commenti sil</button>{% endif %}'+
+            
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '</div>'+
+            '<hr>'
+
+            ).insertAfter('.file')
+        }
+        else if (data['type'] == 'error'){
+            alert(data['message'])
+        }
+    }
+    
 
 
 

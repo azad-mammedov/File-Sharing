@@ -16,10 +16,9 @@
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'file-single' file.id %}">{{file.title}}</a></h5>
                     <p class="card-text">{{file.description}}</p>
-
                 
-                        <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
-                        <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
+                    <a href="{{file.id}}/view/media/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
+                    <a href="{{file.id}}/download/media/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
                 </div>
             </div>
         </div>

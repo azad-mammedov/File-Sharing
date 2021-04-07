@@ -12,14 +12,13 @@ def login_view(request):
     if request.method == "POST":
         username = request.POST.get('username')
         password = request.POST.get('password')
-        print(username,password)
         user = authenticate(username=username,password=password)
         if user is not None:
             login(request,user)
             next_ = request.GET.get('next')
             if next_:
                 return redirect(next_)
-            return redirect("/index")
+            return redirect(reverse('index'))
         else:
             error = "Username or password invalid"
     
@@ -58,4 +57,4 @@ def register_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("/index")
+    return redirect(reverse('index'))

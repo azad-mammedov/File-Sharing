@@ -10,16 +10,15 @@
     {% if files %}
     
         {% for file in files %}
-        <div class="container my-4 alert alert-success"> 
+        <div class="container my-4 alert alert-success file"> 
             <div class="card">
                 <!-- <h5 class="card-header">By <a style="text-decoration:none; color:#DC3545;" href=""></a></h5> -->
                 <div class="card-body">
                     <h5 class="card-title"><a href="{% url 'file-single' file.id %}">{{file.title}}</a></h5>
                     <p class="card-text">{{file.description}}</p>
-
-                
-                        <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
-                        <a href="{{MEDIA_URL}}/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a>  
+                        <a href="/{{file.id}}/view/media/{{file.file_field.url}}" class="btn btn-warning" target="_blank">View</a>
+                        <a href="/{{file.id}}/download/media/{{file.file_field.url}}" class="btn btn-info mx-4" download>Download</a> 
+                        <button class="btn btn-warning delete_file" file_id="{{file.id}}">Sil</button>  
                 </div>
             </div>
         </div>
@@ -33,6 +32,61 @@
 <h1 style="color: blue;">You have not logged in</h1>
     
 {% endif %}`
+
+<script>
+
+// Get csrf token for api session authentication
+function getCookie(name) {
+      var cookieValue = null;
+      if (document.cookie && document.cookie !== '') {
+        var cookies = document.cookie.split(';');
+        for (var i = 0; i < cookies.length; i++) {
+          var cookie = cookies[i].trim();
+          // Does this cookie string begin with the name we want?
+          if (cookie.substring(0, name.length + 1) === (name + '=')) {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+
+
+
+
+
+
+
+
+    $('.delete_file').on('click',function(){
+        this_ = $(this)
+        file_id=this_.attr('file_id')
+        $.ajax({
+            headers:{
+                "X-CSRFToken":getCookie('csrftoken')
+            },
+            method:'DELETE',
+            url:'/api/file/delete/'+file_id,
+            success:function(data){
+                this_.parents('div.file').remove()
+
+            },
+            error:function(data){
+                alert('Xeta bas verdi')
+            }
+            
+
+
+        })
+
+
+
+    })
+
+
+</script>
 
 
 {% endblock %}
