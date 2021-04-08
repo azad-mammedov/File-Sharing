@@ -103,8 +103,9 @@ function getCookie(name) {
         )
 
 
+$(document).ready(function(){
 
-$(".delete_comment").on('click',function(){
+$("div.container").on('click','.delete_comment',function(e){
         console.log('test')
         this_ = $(this)
         comment_id = this_.attr('comment_id')
@@ -117,8 +118,10 @@ $(".delete_comment").on('click',function(){
             },
             url:"/api/comment/delete/"+file_id+"/"+comment_id,
             success:function(data){
+
                 console.log(data)
                 this_.parents('div.comment').remove()
+                e.preventDefault()
                 
 
             },
@@ -155,11 +158,20 @@ $('.btn_send').on('click',function(){
     })
 
 
+
+
+
+
+
+})
+
+
+
     socket.onmessage = function(e){
         data = JSON.parse(e.data)
         console.log(data)
         if(data['status'] == 'created'){
-            $('<div class="col-md-12 col-sm-12" style="border-style:solid">'+
+            $('<div class="col-md-12 col-sm-12 comment" style="border-style:solid">'+
             '<div class="panel panel-default arrow left">'+
             '<div class="panel-body">'+
             '<header class="text-left">'+

@@ -56,7 +56,6 @@ def file_single(request,id):
 #files which shared to you
 @login_required(login_url='/account/login')
 def shared_files(request):
-    print(Permission.objects.filter(user=request.user))
 
     user = request.user
     files  = [x.file for x in Permission.objects.filter(user=request.user).select_related('file')]
@@ -114,7 +113,6 @@ def view_file(request,file_id,path):
 @login_required(login_url='account/login')
 def file_permission(request):
     files = File.objects.filter(user=request.user)
-    print(files)
     users = CustomUser.objects.exclude(username=request.user.username)
     context = {
         'files':files,

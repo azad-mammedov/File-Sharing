@@ -11,12 +11,10 @@ from datetime import datetime
 @database_sync_to_async
 def comment_save_to_db(**data):
     for value in data.values():
-        print(value)
         if value == "":
             return False
     
     user = CustomUser.objects.get(username=data['user'])  
-    print(user)
     comment = Comment.objects.create(user=user,file_id =data['file'],text=data['text'])
     return comment
 

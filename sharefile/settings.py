@@ -11,6 +11,8 @@ https://docs.djangoproject.com/en/3.0/ref/settings/
 """
 
 import os
+from celery.schedules import crontab
+
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -152,4 +154,17 @@ CHANNEL_LAYERS = {
     }
 }
 
+
+CELERY_TIMEZONE = "Asia/Baku"
+CELERY_IMPORTS = ('home.tasks',)
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+
+CELERY_BEAT_SCHEDULE={
+    "deleting_file":{
+        'task':'deleting_files',
+        'schedule':crontab(hour="23")
+    }
+
+}
 
