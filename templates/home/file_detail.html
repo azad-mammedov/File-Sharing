@@ -33,7 +33,7 @@
                         {{comment.text}}
                     </p>
                     
-                    {% if request.user == file.user %}
+                    {% if request.user == file.user or request.user == comment.user %}
                     <button comment_id="{{comment.id}}"  class="delete_comment">commenti sil</button>
                     {% endif %}
                 </div>

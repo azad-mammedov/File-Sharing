@@ -59,8 +59,9 @@ class CommentApi(APIView):
 
     def delete(self,request,file_id,comment_id):
         file = get_object_or_404(File.objects.all(),id=file_id)
-        if request.user == file.user:
-            comment = get_object_or_404(Comment.objects.all(),id=comment_id)
+        comment = get_object_or_404(Comment.objects.all(),id=comment_id)
+        if request.user == file.user or request.user == comment.user:
+            
             comment.delete()
             return Response({'comment':'deleted'},status=200)
         else:
