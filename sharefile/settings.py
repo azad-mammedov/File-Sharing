@@ -27,7 +27,7 @@ SECRET_KEY = '4jk93p!gg08s%2o2pyc4tsj^$q1n&fy698%5h-dkx(+!)g=_cn'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ['*']
 
 
 # Application definition
@@ -92,9 +92,15 @@ ASGI_APPLICATION = "sharefile.asgi.application"
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'sharefile',
+        'USER': 'postgres',
+        'PASSWORD': 'secretpassword',
+        'HOST': 'db',
+        'PORT': 5432,
+        
     }
+            
 }
 
 
@@ -157,8 +163,8 @@ CHANNEL_LAYERS = {
 
 CELERY_TIMEZONE = "Asia/Baku"
 CELERY_IMPORTS = ('home.tasks',)
-CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
-CELERY_RESULT_BACKEND = 'redis://127.0.0.1:6379'
+CELERY_BROKER_URL = "redis://redis:6379"
+CELERY_RESULT_BACKEND = "redis://redis:6379"
 
 CELERY_BEAT_SCHEDULE={
     "deleting_file":{
